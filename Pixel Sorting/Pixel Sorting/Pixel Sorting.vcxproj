@@ -128,13 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
-    <ClCompile Include="ImageRecreator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MosaicMaker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitmap.h" />
-    <ClInclude Include="ImageRecreator.h" />
     <ClInclude Include="MosaicMaker.h" />
     <ClInclude Include="RandomStuff.h" />
   </ItemGroup>

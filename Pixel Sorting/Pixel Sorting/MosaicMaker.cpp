@@ -61,7 +61,7 @@ BitmapImage MosaicMaker::createMosaic(const BitmapImage& originalImage, const Bi
     int numberOfBlocks = std::min(originalBlocks.size(), referenceBlocks.size());
     for (int i = 0; i < numberOfBlocks; i++) 
     {
-        //  grabbing from same index of sorted list gives blocks that most closely match in average color
+        //  grabbing from same index of sorted list gives blocks that most closely match in average color*
         BlockRecord& originalBlock = originalBlocks[i];
         BlockRecord& referenceBlock = referenceBlocks[i];
 

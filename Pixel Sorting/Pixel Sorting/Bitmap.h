@@ -152,7 +152,7 @@ public:
         // allocate storage for all rows including padding
         rawData.resize(rowSize * height);
 
-        // Fill pixels with the given color
+        // fill pixels with the given color
         for (int y = 0; y < height; y++) 
         {
             for (int x = 0; x < width; x++) 
