@@ -5,7 +5,6 @@
 #include <conio.h>
 #include "Bitmap.h"
 #include "MosaicMaker.h"
-#include "RandomStuff.h"
 
 int main() {
 
