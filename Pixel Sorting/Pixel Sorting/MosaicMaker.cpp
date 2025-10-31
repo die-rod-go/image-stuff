@@ -9,24 +9,24 @@ uint32_t MosaicMaker::packRgb(uint8_t red, uint8_t green, uint8_t blue)
     return	hex;
 }
 
-BitmapImage MosaicMaker::createMosaic(const BitmapImage& originalImage, const BitmapImage& referenceImage, int blockSize)
+BitmapImage MosaicMaker::createMosaic(const BitmapImage& donorImage, const BitmapImage& referenceImage, int blockSize)
 {
     if (blockSize <= 0)
         return BitmapImage{};
 
     // find common area that is divisible by blockSize
-    int commonWidth = std::min(originalImage.getWidth(), referenceImage.getWidth());
-    int commonHeight = std::min(originalImage.getHeight(), referenceImage.getHeight());
+    int commonWidth = std::min(donorImage.getWidth(), referenceImage.getWidth());
+    int commonHeight = std::min(donorImage.getHeight(), referenceImage.getHeight());
     int blocksAcross = commonWidth / blockSize;
     int blocksDown = commonHeight / blockSize;
     int mosaicWidth = blocksAcross * blockSize;
     int mosaicHeight = blocksDown * blockSize;
 
-    // create output image
+    // create blank output image
     BitmapImage mosaicImage;
     mosaicImage.create(mosaicWidth, mosaicHeight);
 
-    std::vector<BlockRecord> originalBlocks;
+    std::vector<BlockRecord> donorBlocks;
     std::vector<BlockRecord> referenceBlocks;
 
     for (int blockY = 0; blockY < blocksDown; blockY++) 
@@ -36,11 +36,11 @@ BitmapImage MosaicMaker::createMosaic(const BitmapImage& originalImage, const Bi
             int startPixelX = blockX * blockSize;
             int startPixelY = blockY * blockSize;
 
-            BlockRecord originalRecord;
-            originalRecord.blockX = blockX;
-            originalRecord.blockY = blockY;
-            originalRecord.averageColorSRGB = computeAverageBlockColor(originalImage, startPixelX, startPixelY, blockSize);
-            originalBlocks.push_back(originalRecord);
+            BlockRecord donorRecord;
+            donorRecord.blockX = blockX;
+            donorRecord.blockY = blockY;
+            donorRecord.averageColorSRGB = computeAverageBlockColor(donorImage, startPixelX, startPixelY, blockSize);
+            donorBlocks.push_back(donorRecord);
 
             BlockRecord referenceRecord;
             referenceRecord.blockX = blockX;
@@ -54,24 +54,24 @@ BitmapImage MosaicMaker::createMosaic(const BitmapImage& originalImage, const Bi
     auto cmp = [](const BlockRecord& a, const BlockRecord& b) {
         return a.averageColorSRGB < b.averageColorSRGB;
     };
-    std::sort(originalBlocks.begin(), originalBlocks.end(), cmp);
+    std::sort(donorBlocks.begin(), donorBlocks.end(), cmp);
     std::sort(referenceBlocks.begin(), referenceBlocks.end(), cmp);
 
-    // map blocks in original to blocks in reference and copy to new image
-    int numberOfBlocks = std::min(originalBlocks.size(), referenceBlocks.size());
+    // map blocks in donor to blocks in reference and copy to new image
+    int numberOfBlocks = std::min(donorBlocks.size(), referenceBlocks.size());
     for (int i = 0; i < numberOfBlocks; i++) 
     {
         //  grabbing from same index of sorted list gives blocks that most closely match in average color*
-        BlockRecord& originalBlock = originalBlocks[i];
+        BlockRecord& donorBlock = donorBlocks[i];
         BlockRecord& referenceBlock = referenceBlocks[i];
 
         // convert block coordinates back into pixel coordinates
         int destinationStartPixelX = referenceBlock.blockX * blockSize;
         int destinationStartPixelY = referenceBlock.blockY * blockSize;
-        int sourceStartPixelX = originalBlock.blockX * blockSize;
-        int sourceStartPixelY = originalBlock.blockY * blockSize;
+        int sourceStartPixelX = donorBlock.blockX * blockSize;
+        int sourceStartPixelY = donorBlock.blockY * blockSize;
 
-        copyBlock(originalImage, mosaicImage, sourceStartPixelX, sourceStartPixelY, destinationStartPixelX, destinationStartPixelY, blockSize);
+        copyBlock(donorImage, mosaicImage, sourceStartPixelX, sourceStartPixelY, destinationStartPixelX, destinationStartPixelY, blockSize);
     }
 
     return mosaicImage;

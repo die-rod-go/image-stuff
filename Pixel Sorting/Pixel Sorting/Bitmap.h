@@ -118,7 +118,7 @@ public:
         BitmapInfoHeader infoHeader{};
 
         // file header
-        fileHeader.type = 0x4D42; // 'BM'
+        fileHeader.type = 0x4D42;
         fileHeader.pixelDataOffset = sizeof(fileHeader) + sizeof(infoHeader);
         fileHeader.fileSize = fileHeader.pixelDataOffset + rawData.size();
 
@@ -165,7 +165,7 @@ public:
     }
 
 private:
-    std::vector<uint8_t> rawData; // raw bytes of pixel rows (with padding at row ends)
+    std::vector<uint8_t> rawData; // has (with padding at row ends)
     int rowSize = 0;
     int width = 0;
     int height = 0;
